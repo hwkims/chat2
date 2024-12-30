@@ -107,10 +107,23 @@
       animation: fadeIn 0.5s forwards;
     }
 
-    .thinking .dots {
+    .thinking .dots span {
       font-size: 18px;
       color: #4CAF50;
+      margin-left: 2px;
       animation: typing 1.5s infinite steps(1, end);
+    }
+
+    .thinking .dots span:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .thinking .dots span:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .thinking .dots span:nth-child(3) {
+      animation-delay: 1s;
     }
 
     @keyframes fadeIn {
@@ -125,10 +138,12 @@
     }
 
     @keyframes typing {
-      0% { content: '.'; }
-      33% { content: '..'; }
-      66% { content: '...'; }
-      100% { content: '.'; }
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
   </style>
 </head>
@@ -186,7 +201,7 @@
 
     const dots = document.createElement('div');
     dots.classList.add('dots');
-    dots.textContent = '.';
+    dots.innerHTML = '<span></span><span></span><span></span>'; // 3개의 점을 표시
 
     thinkingDiv.appendChild(dots);
     chatBox.appendChild(thinkingDiv);
