@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>채팅봇</title>
+  <style>
+    /* 전체 레이아웃 */
+    body {
+      font-family: 'Helvetica', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .chat-container {
+      width: 380px;
+      max-width: 100%;
+      height: 600px;
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .chat-box {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .input-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      background-color: #f1f1f1;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding: 10px 15px;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #009688;
+    }
+
+    /* 메시지 스타일 */
+    .message {
+      display: flex;
+      margin: 10px 0;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .message.bot {
+      justify-content: flex-start;
+    }
+
+    .message .text {
+      max-width: 75%;
+      padding: 12px 18px;
+      border-radius: 20px;
+      font-size: 16px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+
+    .message.bot .text {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .message.user .text {
+      background-color: #0084FF;
+      color: white;
+    }
+
+    /* 봇의 "생각하는 중" 애니메이션 */
+    .thinking {
+      display: flex;
+      justify-content: flex-start;
+      margin: 10px 0;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    .thinking .dots {
+      font-size: 18px;
+      color: #4CAF50;
+      animation: typing 1.5s infinite steps(1, end);
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes typing {
+      0% { content: '.'; }
+      33% { content: '..'; }
+      66% { content: '...'; }
+      100% { content: '.'; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-box" id="chatBox">
+    <!-- 메시지 영역 -->
+  </div>
+  <div class="input-box">
+    <input type="text" id="userInput" placeholder="메시지를 입력하세요..." onkeydown="sendMessage(event)">
+  </div>
+</div>
+
+<script>
+  function sendMessage(event) {
+    if (event.key === 'Enter' && event.target.value.trim() !== '') {
+      const userMessage = event.target.value.trim();
+      event.target.value = '';
+      
+      // 사용자 메시지 추가
+      appendMessage(userMessage, 'user');
+
+      // 봇의 "생각 중" 애니메이션 추가
+      showThinking();
+
+      // 1초 후에 봇이 응답하도록 설정 (딜레이 후 사용자 메시지 반복)
+      setTimeout(() => {
+        const botMessage = userMessage;
+        appendMessage(botMessage, 'bot');
+      }, 1500);
+    }
+  }
+
+  function appendMessage(message, sender) {
+    const chatBox = document.getElementById('chatBox');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', sender);
+
+    const messageText = document.createElement('div');
+    messageText.classList.add('text');
+    messageText.textContent = message;
+
+    messageDiv.appendChild(messageText);
+    chatBox.appendChild(messageDiv);
+
+    // 자동 스크롤 맨 아래로
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function showThinking() {
+    const chatBox = document.getElementById('chatBox');
+    const thinkingDiv = document.createElement('div');
+    thinkingDiv.classList.add('thinking');
+
+    const dots = document.createElement('div');
+    dots.classList.add('dots');
+    dots.textContent = '.';
+
+    thinkingDiv.appendChild(dots);
+    chatBox.appendChild(thinkingDiv);
+
+    // 생각 중 메시지 추가 후 자동 스크롤
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+</script>
+
+</body>
+</html>
